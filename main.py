@@ -2,9 +2,9 @@ import os
 
 import discord
 
-# token = os.environ["TOKEN"]
+token = os.environ["TOKEN"]
 shift = 32
-words = ["amogus", "sussy", "baka", "impostor", "amogsus", "suspicious", "daddy", "submissive", "breedable"]
+words = ["amogus", "sussy", "baka", "impostor", "amogsus", "sugondese", "daddy", "submissive", "breedable"]
 translations = ["mog"]
 for word in words:
     for start in range(len(word)):
@@ -17,7 +17,6 @@ for word in words:
 max_char = len(translations)
 
 client = discord.Client()
-
 
 @client.event
 async def on_ready():
@@ -50,4 +49,4 @@ async def on_message(message):
                     break
                 response += "?"
     await message.channel.send(response)
-    client.run()
+    client.run(token)
