@@ -55,6 +55,9 @@ async def on_message(message):
                     break
             else:
                 response += "?"
+    elif message.content == "ඞ" or message.content == "ඞhelp":
+        response = "Hey sussy baka, here are my commands:\nඞtoamog: translate to amogus\nඞfromamog: translate from " \
+                   "amogus "
     else:
         response = "Invalid command, you sussy baka ඞඞඞ"
 
