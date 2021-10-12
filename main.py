@@ -26,6 +26,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print("The sus has arrived ඞඞඞ")
+    await client.change_presence(activity=discord.Game('Among Us (But in Real Life)'))
 
 
 @client.event
