@@ -61,5 +61,4 @@ async def on_message(message):
     await message.channel.send(response)
 
 
-print(os.getenv("TOKEN"))
 client.run(os.getenv("TOKEN"))
