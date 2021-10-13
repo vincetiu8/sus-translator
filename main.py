@@ -28,7 +28,7 @@ async def on_ready():
 async def on_guild_join(guild):
     for channel in guild.text_channels:
         if channel.permissions_for(guild.me).send_messages:
-            await channel.send("ඞඞඞ The S U S has arrived ඞඞඞ")
+            await channel.send("ඞඞඞ The S U S has arrived ඞඞඞ\nMy prefix is ඞ, and there's no changing it sussy bakas!")
 
 
 @inter_client.slash_command(
@@ -109,8 +109,8 @@ async def from_amog_bot(ctx):
     description="Get some help"
 )
 async def _help(ctx):
-    resp = "Hey sussy baka, here are my commands:\nඞtoamog: translate to amogus\nඞfromamog: translate from " \
-           "amogus"
+    resp = "Hey sussy baka, here are my commands:\nඞtoamog: translate to amoglish\nඞfromamog: translate from " \
+           "amoglish"
     await ctx.send(resp)
 
 
