@@ -62,8 +62,8 @@ async def _toamog(ctx, message=None):
 
 
 @bot.command(name="toamog", help="Translates to amoglish")
-async def to_amog_bot(ctx, message: str):
-    await _toamog(ctx, message)
+async def to_amog_bot(ctx):
+    await _toamog(ctx, ctx.message.content[8:])
 
 
 @inter_client.slash_command(
@@ -100,8 +100,8 @@ async def _fromamog(ctx, message=None):
 
 
 @bot.command(name="fromamog", help="Translates from amoglish")
-async def from_amog_bot(ctx, message: str):
-    await _fromamog(ctx, message)
+async def from_amog_bot(ctx):
+    await _fromamog(ctx, ctx.message.content[10:])
 
 
 @inter_client.slash_command(
