@@ -48,10 +48,12 @@ async def _toamog(ctx, message=None):
         if 0 < i and message[i - 1] != " ":
             resp += "a"
 
-        index = translations.index(char)
-        if index == -1:
+        try:
+            index = translations.index(char)
+        except:
             index = ord(char)
-        elif index == 0:
+
+        if index == 0:
             resp += words[0]
             continue
 
