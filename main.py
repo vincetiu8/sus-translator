@@ -2,67 +2,122 @@ import os
 import random
 
 import discord
+from discord.ext import commands
+from dislash import InteractionClient, Option, OptionType
+
+test_guild_id = [688903458400894994]
 
 shift = 32
-words = ["amogus", "sussy", "baka", "impostor", "amogsus", "sugondese", "daddy", "submissive", "breedable"]
-translations = []
-for word in words:
-    for start in range(len(word)):
-        for end in range(start + 3, len(word) + 1):
-            part = word[start:end]
-            if part in translations:
-                continue
-            translations.append(part)
+words = ["mog", "og", "sus", "us", "le", "pog"]
+words_len = len(words)
+bot = commands.Bot(command_prefix="ඞ", help_command=None)
+inter_client = InteractionClient(bot, test_guilds=test_guild_id)
 
-random.shuffle(translations)
-translations.remove("amogus")
-translations.insert(0, "amogus")
-
-max_char = len(translations)
-
-client = discord.Client()
+move_to_front = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+translations = [chr(i) for i in range(ord("z") + 1)]
+for c in move_to_front[::-1]:
+    translations.remove(c)
+    translations.insert(0, c)
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print("The sus has arrived ඞඞඞ")
-    await client.change_presence(activity=discord.Game('Among Us (But in Real Life)'))
+    await bot.change_presence(activity=discord.Game('Among Us (But in Real Life)'))
 
 
-@client.event
-async def on_message(message):
-    if message.author == client.user or not message.content.startswith("ඞ"):
-        return
+@bot.event
+async def on_guild_join(guild):
+    for channel in guild.text_channels:
+        if channel.permissions_for(guild.me).send_messages:
+            await channel.send("ඞඞඞ The S U S has arrived ඞඞඞ")
 
-    response = "ඞඞඞ Your translation is: "
-    if message.content.startswith("ඞtoamog "):
-        for char in message.content.split("ඞtoamog ")[1]:
-            index = ord(char) - shift
-            if char == ' ':
-                index = 0
-            if index >= len(translations):
-                response += translations[63 - shift] + " "
+
+@inter_client.slash_command(
+    name="toamog",
+    description="Translates to amoglish",
+    options=[
+        Option("message", "Message to translate to amoglish", OptionType.STRING, required=True)
+    ]
+)
+async def _toamog(ctx, message=None):
+    resp = "ඞඞඞ Your translation is: "
+    for i, char in enumerate(message):
+        if char == " ":
+            resp += " "
+            continue
+
+        if 0 < i and message[i - 1] != " ":
+            resp += "a"
+
+        index = translations.index(char)
+        if index == -1:
+            index = ord(char)
+        elif index == 0:
+            resp += words[0]
+            continue
+
+        while index > 0:
+            resp += words[index % words_len]
+            index //= words_len
+    await ctx.reply(resp)
+
+
+@bot.command(name="toamog", help="Translates to amoglish")
+async def to_amog_bot(ctx, message: str):
+    await _toamog(ctx, message)
+
+
+@inter_client.slash_command(
+    name="fromamog",
+    description="Translates from amoglish",
+    options=[
+        Option("message", "Message to translate from amoglish", OptionType.STRING, required=True)
+    ]
+)
+async def _fromamog(ctx, message=None):
+    resp = "ඞඞඞ Your translation is: "
+    parts = message.split(" ")
+    for message_part in parts:
+        letters = message_part.split("a")
+        for letter in letters:
+            index = 0
+            power = 1
+            while len(letter) > 0:
+                for i, word in enumerate(words):
+                    if letter.startswith(word):
+                        index += power * i
+                        power *= words_len
+                        letter = letter[len(word):]
+                        break
+                else:
+                    await ctx.reply("Not valid amoglish, you sussy baka ඞඞඞ")
+                    return
+            if index < len(translations):
+                resp += translations[index]
                 continue
-            response += translations[index] + " "
-    elif message.content.startswith("ඞfromamog "):
-        parts = message.content.split("ඞfromamog ")[1].split(" ")
-        for message_part in parts:
-            for i, match in enumerate(translations):
-                if message_part == match:
-                    if i == 0:
-                        response += " "
-                    else:
-                        response += chr(i + shift)
-                    break
-            else:
-                response += "?"
-    elif message.content == "ඞ" or message.content == "ඞhelp":
-        response = "Hey sussy baka, here are my commands:\nඞtoamog: translate to amogus\nඞfromamog: translate from " \
-                   "amogus "
-    else:
-        response = "Invalid command, you sussy baka ඞඞඞ"
-
-    await message.channel.send(response)
+            resp += chr(index)
+        resp += " "
+    await ctx.reply(resp)
 
 
-client.run(os.getenv("TOKEN"))
+@bot.command(name="fromamog", help="Translates from amoglish")
+async def from_amog_bot(ctx, message: str):
+    await _fromamog(ctx, message)
+
+
+@inter_client.slash_command(
+    name="help",
+    description="Get some help"
+)
+async def _help(ctx):
+    resp = "Hey sussy baka, here are my commands:\nඞtoamog: translate to amogus\nඞfromamog: translate from " \
+           "amogus"
+    await ctx.send(resp)
+
+
+@bot.command(name="help", help="Get some help")
+async def help(ctx):
+    await _help(ctx)
+
+
+bot.run(os.getenv("TOKEN"))
