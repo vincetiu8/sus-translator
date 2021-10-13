@@ -4,13 +4,11 @@ import discord
 from discord.ext import commands
 from dislash import InteractionClient, Option, OptionType
 
-test_guild_id = [688903458400894994]
-
 shift = 32
 words = ["mog", "og", "sus", "us", "le", "pog"]
 words_len = len(words)
 bot = commands.Bot(command_prefix="ඞ", help_command=None)
-inter_client = InteractionClient(bot, test_guilds=test_guild_id)
+inter_client = InteractionClient(bot)
 
 move_to_front = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 translations = [chr(i) for i in range(ord("z") + 1)]
