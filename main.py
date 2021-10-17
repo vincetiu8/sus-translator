@@ -4,22 +4,29 @@ import discord
 from discord.ext import commands
 from dislash import InteractionClient, Option, OptionType
 
-shift = 32
-words = ["mog", "og", "sus", "us", "le", "pog"]
+words = ["pog", "sus", "mog", "og", "us", "le"]
 words_len = len(words)
 bot = commands.Bot(command_prefix="ඞ", help_command=None)
 inter_client = InteractionClient(bot)
 
-move_to_front = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+move_to_front = "abcdefghijklmnopqrstuvwxyz"
 translations = [chr(i) for i in range(ord("z") + 1)]
 for c in move_to_front[::-1]:
     translations.remove(c)
+    translations.remove(c.upper())
     translations.insert(0, c)
 
+shift = ord("z") + 1 - len(translations)
 
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game('Among Us (But in Real Life)'))
+    for guild in bot.guilds:
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                await channel.send(
+                    "ඞඞඞ Patch Notes ඞඞඞ\n- Updated translation settings, making it easier to learn")
+                break
 
 
 @bot.event
@@ -27,6 +34,7 @@ async def on_guild_join(guild):
     for channel in guild.text_channels:
         if channel.permissions_for(guild.me).send_messages:
             await channel.send("ඞඞඞ The S U S has arrived ඞඞඞ\nMy prefix is ඞ, and there's no changing it sussy bakas!")
+            break
 
 
 @inter_client.slash_command(
@@ -49,7 +57,11 @@ async def _toamog(ctx, message=None):
         try:
             index = translations.index(char)
         except:
-            index = ord(char)
+            try:
+                index = translations.index(char.lower())
+                resp += "da"
+            except:
+                index = ord(char) - shift
 
         if index == 0:
             resp += words[0]
@@ -79,6 +91,7 @@ async def _fromamog(ctx, message=None):
     for message_part in parts:
         letters = message_part.split("a")
         for letter in letters:
+            upper = letter.index("da")
             index = 0
             power = 1
             while len(letter) > 0:
@@ -92,9 +105,9 @@ async def _fromamog(ctx, message=None):
                     await ctx.reply("Not valid amoglish, you sussy baka ඞඞඞ")
                     return
             if index < len(translations):
-                resp += translations[index]
+                resp += translations[index].upper() if upper else translations[index]
                 continue
-            resp += chr(index)
+            resp += chr(index + shift)
         resp += " "
     await ctx.reply(resp)
 
