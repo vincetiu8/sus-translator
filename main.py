@@ -89,10 +89,11 @@ async def _fromamog(ctx, message=None):
     parts = message.split(" ")
     for message_part in parts:
         letters = message_part.split("a")
+        upper = False
         for letter in letters:
-            upper = "da" in letter
-            if upper:
-                letter = letter[2:]
+            if letter == "d":
+                upper = True
+                continue
             index = 0
             power = 1
             while len(letter) > 0:
@@ -106,7 +107,11 @@ async def _fromamog(ctx, message=None):
                     await ctx.reply("Not valid amoglish, you sussy baka ඞඞඞ")
                     return
             if index < len(translations):
-                resp += translations[index].upper() if upper else translations[index]
+                if upper:
+                    resp += translations[index].upper()
+                    upper = False
+                else:
+                    resp += translations[index]
                 continue
             resp += chr(index + shift)
         resp += " "
