@@ -18,14 +18,13 @@ for c in move_to_front[::-1]:
 
 shift = ord("z") + 1 - len(translations)
 
+
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game('Among Us (But in Real Life)'))
     for guild in bot.guilds:
         for channel in guild.text_channels:
             if channel.permissions_for(guild.me).send_messages:
-                await channel.send(
-                    "ඞඞඞ Patch Notes ඞඞඞ\n- Updated translation settings, making it easier to learn")
                 break
 
 
@@ -91,7 +90,9 @@ async def _fromamog(ctx, message=None):
     for message_part in parts:
         letters = message_part.split("a")
         for letter in letters:
-            upper = letter.index("da")
+            upper = "da" in letter
+            if upper:
+                letter = letter[2:]
             index = 0
             power = 1
             while len(letter) > 0:
